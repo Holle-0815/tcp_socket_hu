@@ -1,55 +1,46 @@
 #!/usr/bin/env python3
 
+from datetime import datetime
 import socket
 import sys
 import os
 
 #Parameter
-TCP_IP = '127.0.0.1' # '10.182.217.108.'
-TCP_PORT = 1234 #8181
+TCP_IP = sys.argv[1]
+TCP_PORT = int(sys.argv[2])
 BUFFER_SIZE = 1024
-#argument = sys.argv[1]
-argument = "Data;22391021099H23;52345235235;13;5;"
+argument = sys.argv[3]
 
-#file_name = "C:\Users\wagnerho\Documents\Python\message.txt"
-
-# 
 PFAD = sys.path[0]
 file_name = "messages.txt"
 path_file = os.sep.join([PFAD, file_name])
 
-print( PFAD)
-print( file_name)
-print( path_file )
 file = open(path_file, 'a+')
 
 MESSAGE = str.encode(argument)
 
-file.write( argument )
-file.close()
+#file.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' ' )
+file.write( '--------------> Start Session ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n')
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-#message_file.write( argument )
-print ("Übergebene Daten:", argument)
-
 try:
     s.connect((TCP_IP, TCP_PORT))
+    file.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' ' )
+    file.write( 'Connected to ' + TCP_IP +' / ' + str(TCP_PORT) + '\n' )
+
     s.send(MESSAGE)
-#data = s.recv(BUFFER_SIZE)
-#print ("receiver data:", data)
+    file.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' ' )
+    file.write( 'Send ' + argument + '\n' )
+    
     s.close()
+    file.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' ' )
+    file.write( 'Closed connection to ' + TCP_IP +' / ' + str(TCP_PORT) + '\n' )
 except: 
-    print("Connect Fehler:", sys.exc_info()[0]) 
-    
+    file.write( datetime.now().strftime('%Y-%m-%d %H:%M:%S') + ' ' )
+    file.write( 'Error ' + str( sys.exc_info()[0] ) + '\n' )
+    file.write( 'Not Send ' + argument + '\n' )
+    #print("Error:", sys.exc_info()[0]) 
 
-    
-
-
-
-'''
-KUNDENMATERIAL = sys.argv[1]
-HANDLINGUNIT = sys.argv[2]
-SOLLMENGE = sys.argv[3]
-ISTMENGE = sys.argv[4]
-'''
+file.write( '<------------- End Session ' + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '\n')
+file.close()
